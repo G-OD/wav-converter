@@ -8,6 +8,8 @@ module.exports = {
  * @param options.numChannels
  * @param options.sampleRate 
  * @param options.byteRate
+ * @param options.blockAlign
+ * @param options.bitsPerSample
  * @return Buffer
  * @throws Exception
  */
@@ -23,6 +25,8 @@ function encodeWav(rawPCM, options) {
     const sampleRate = opt.sampleRate || 16000
     const numChannels = opt.numChannels || 1
     const byteRate = opt.byteRate || 16
+    const bitsPerSample = opt.bitsPerSample || 16
+    const blockAlign = opt.blockAlign || 4
 
     const buf = rawPCM
     const header = new Buffer.alloc(44)
@@ -36,8 +40,8 @@ function encodeWav(rawPCM, options) {
     header.writeUInt8(numChannels, 22)
     header.writeUInt32LE(sampleRate, 24)
     header.writeUInt32LE(byteRate, 28)
-    header.writeUInt8(4, 32)
-    header.writeUInt8(16, 34)
+    header.writeUInt8(blockAlign, 32)
+    header.writeUInt8(bitsPerSample, 34)
     header.write('data', 36)
     header.writeUInt32LE(buf.length + 44 - 8, 40)
 
